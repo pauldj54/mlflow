@@ -2,7 +2,6 @@
 # P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis.
 # Modeling wine preferences by data mining from physicochemical properties. In Decision Support Systems, Elsevier, 47(4):547-553, 2009.
 
-import os
 import warnings
 import sys
 
@@ -55,7 +54,16 @@ if __name__ == "__main__":
     alpha = float(sys.argv[1]) if len(sys.argv) > 1 else 0.5
     l1_ratio = float(sys.argv[2]) if len(sys.argv) > 2 else 0.5
 
-    with mlflow.start_run():
+    # Set tracking server url
+    mlflow.tracking.set_tracking_uri("http://localhost:5000/")
+    # Create an experiment
+
+    mlflow.set_experiment("DemoLinearRegression")
+    # Get experiment details
+    experiment = mlflow.get_experiment_by_name("DemoLinearRegression")
+    experiment_id = experiment.experiment_id
+
+    with mlflow.start_run(experiment_id=experiment_id):
         lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=42)
         lr.fit(train_x, train_y)
 
